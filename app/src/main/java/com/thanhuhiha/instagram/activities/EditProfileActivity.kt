@@ -1,113 +1,156 @@
 package com.thanhuhiha.instagram.activities
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.TextView
-import androidx.core.content.FileProvider
-import com.google.firebase.auth.AuthCredential
+import android.widget.Toast
 import com.google.firebase.auth.EmailAuthProvider
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.*
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.thanhuhiha.instagram.R
 import com.thanhuhiha.instagram.models.User
+import com.thanhuhiha.instagram.utils.CameraPictureTaker
+import com.thanhuhiha.instagram.utils.ValueEventListenerAdapter
 import com.thanhuhiha.instagram.views.PasswordDialog
 import kotlinx.android.synthetic.main.activity_edit_profile.*
-import java.io.File
-import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
 
 class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
     private val TAG = "EditProfileActivity"
-    private lateinit var mImageUri: Uri
-    private val TAKE_PICTURE_REQUEST_CODE = 1
     private lateinit var mUser: User
     private lateinit var mPendingUser: User
-    private lateinit var mAuth: FirebaseAuth
-    private lateinit var mDatabase: DatabaseReference
-    private lateinit var mStorage: StorageReference
-    val simpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+    private lateinit var mFirebaseHelper: FirebaseHelper
+    private lateinit var cameraPictureTaker: CameraPictureTaker
+    private val PERMISSION_CODE = 1000
+    private val IMAGE_CAPTURE_CODE = 1001
+    var image_uri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
         Log.d(TAG, "OnCreate")
 
+        cameraPictureTaker =
+            CameraPictureTaker(this)
+        mFirebaseHelper = FirebaseHelper(this)
+
         close_image.setOnClickListener { finish() }
         save_image.setOnClickListener { updateProfile() }
-        change_photo_text.setOnClickListener { takeCameraPicture() }
+        //change_photo_text.setOnClickListener { cameraPictureTaker.takeCameraPicture() }
 
-        mAuth = FirebaseAuth.getInstance()
-        mDatabase = FirebaseDatabase.getInstance().reference
-        mStorage = FirebaseStorage.getInstance().reference
+        change_photo_text.setOnClickListener {
+            //if system os is Marshmallow or Above, we need to request runtime permission
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (checkSelfPermission(Manifest.permission.CAMERA)
+                    == PackageManager.PERMISSION_DENIED ||
+                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_DENIED
+                ) {
+                    //permission was not enabled
+                    val permission = arrayOf(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                    //show popup to request permission
+                    requestPermissions(permission, PERMISSION_CODE)
+                } else {
+                    //permission already granted
+                    openCamera()
+                }
+            } else {
+                //system os is < marshmallow
+                openCamera()
+            }
+        }
 
-        mDatabase.child("users").child(mAuth.currentUser!!.uid)
+//        mAuth = FirebaseAuth.getInstance()
+//        mDatabase = FirebaseDatabase.getInstance().reference
+//        mStorage = FirebaseStorage.getInstance().reference
+
+        mFirebaseHelper.currentUserReference()
             .addListenerForSingleValueEvent(ValueEventListenerAdapter {
                 mUser = it.getValue(User::class.java)!!
-                name_input.setText(mUser.name, TextView.BufferType.EDITABLE)
-                username_input.setText(mUser.username, TextView.BufferType.EDITABLE)
-                email_input.setText(mUser.email, TextView.BufferType.EDITABLE)
-                phone_input.setText(mUser.phone.toString(), TextView.BufferType.EDITABLE)
-                bio_input.setText(mUser.bio, TextView.BufferType.EDITABLE)
-                website_input.setText(mUser.website, TextView.BufferType.EDITABLE)
+                name_input.setText(mUser.name)
+                username_input.setText(mUser.username)
+                email_input.setText(mUser.email)
+                phone_input.setText(mUser.phone?.toString())
+                bio_input.setText(mUser.bio)
+                website_input.setText(mUser.website)
+//                GlideApp.with(this,)
+                profile_image.loadUserPhoto(mUser.photo)
+                Log.d(TAG,"Image: ${mUser.photo} ")
             })
     }
 
-    private fun takeCameraPicture() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (intent.resolveActivity(packageManager) != null) {
-            val imageFile = createImageFile()
-            mImageUri = FileProvider.getUriForFile(
-                this,
-                BuildConfig.APPLICATION_ID+"fileprovider",
-                imageFile
-            )
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri)
-            startActivityForResult(intent, TAKE_PICTURE_REQUEST_CODE)
-        }
-
+    private fun openCamera() {
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.TITLE, "New Picture")
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
+        image_uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        //camera intent
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
+        startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE)
     }
 
-    private fun createImageFile(): File {
-        // Create an image file name
-        val timeStamp = simpleDateFormat.format(Date())
-        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "JPEG_${timeStamp}_",
-            ".jpg",
-            storageDir
-        )
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        //called when user presses ALLOW or DENY from Permission Request Popup
+        when (requestCode) {
+            PERMISSION_CODE -> {
+                if (grantResults.size > 0 && grantResults[0] ==
+                    PackageManager.PERMISSION_GRANTED
+                ) {
+                    //permission from popup was granted
+                    openCamera()
+                } else {
+                    //permission from popup was denied
+                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == TAKE_PICTURE_REQUEST_CODE && resultCode == RESULT_OK) {
+//        if (requestCode == cameraPictureTaker.REQUEST_CODE && resultCode == RESULT_OK) {
+////            //update image to firebase storage
+////            mFirebaseHelper.uploadUserPhoto(cameraPictureTaker.imageUri!!) {
+////                val photoUrl = it.storage?.downloadUrl.toString()
+////                mFirebaseHelper.updateUserPhoto(photoUrl) {
+////                    mUser = mUser.copy(photo = photoUrl)
+////                    profile_image.loadUserPhoto(mUser.photo)
+////                }
+////            }
+////        }
+        if (resultCode == Activity.RESULT_OK) {
+            //set image captured to image view
             //update image to firebase storage
-            val uid = mAuth.currentUser!!.uid
-            mStorage.child("users/$uid/photo").putFile(mImageUri).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    mDatabase.child("users/$uid/photo").setValue(it.result?.storage?.downloadUrl)
-                        .addOnCompleteListener {
-                            if (it.isSuccessful) {
-                                Log.d(TAG, "onActivityResult : photo saved successfully")
-                            } else {
-                                showToast(it.exception!!.message!!)
-                            }
-                        }
+            Log.d(TAG,"IMAGE1: $image_uri")
+            mFirebaseHelper.uploadUserPhoto(image_uri!!) {
+                val photoUrl = it.storage?.downloadUrl.toString()
+                mFirebaseHelper.updateUserPhoto(image_uri.toString()) {
+                    mUser = mUser.copy(photo = image_uri.toString())
+                    profile_image.loadUserPhoto(mUser.photo)
+                    //profile_image.setImageURI(image_uri)
+////                }
+                    //profile_image.setImageURI(image_uri)
                 }
             }
-            //save image to database user.photo
         }
     }
+    //save image to database user.photo
+
 
     private fun updateProfile() {
         //get user from input
@@ -130,22 +173,22 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
     }
 
     private fun readInputs(): User {
-        val phoneStr = phone_input.text.toString()
         return User(
             name = name_input.text.toString(),
             username = username_input.text.toString(),
-            website = website_input.text.toString(),
-            bio = bio_input.text.toString(),
+            website = website_input.text.toStringOrNull(),
+            bio = bio_input.text.toStringOrNull(),
             email = email_input.text.toString(),
-            phone = if (phoneStr.isEmpty()) 0 else phoneStr.toLong()
+            phone = phone_input.text.toString().toLongOrNull()
         )
     }
+
 
     override fun onPasswordConfirm(password: String) {
         if (password.isNotEmpty()) {
             val credential = EmailAuthProvider.getCredential(mUser.email, password)
-            mAuth.currentUser!!.reautherticate(credential) {
-                mAuth.currentUser!!.updateEmail(mPendingUser.email) {
+            mFirebaseHelper.reautherticate(credential) {
+                mFirebaseHelper.updateEmail(mPendingUser.email) {
                     //update user
                     updateUser(mPendingUser)
                 }
@@ -156,7 +199,7 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
     }
 
     private fun updateUser(user: User) {
-        val updatesMap = mutableMapOf<String, Any>()
+        val updatesMap = mutableMapOf<String, Any?>()
         if (user.name != mUser.name) updatesMap["name"] = user.name
         if (user.username != mUser.username) updatesMap["username"] = user.username
         if (user.website != mUser.website) updatesMap["website"] = user.website
@@ -164,7 +207,7 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
         if (user.email != mUser.email) updatesMap["email"] = user.email
         if (user.phone != mUser.phone) updatesMap["phone"] = user.phone
 
-        mDatabase.updateUser(mAuth.currentUser!!.uid, updatesMap) {
+        mFirebaseHelper.updateUser(updatesMap) {
             showToast("Profile saved")
             finish()
         }
@@ -177,39 +220,5 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
         else -> null
     }
 
-    private fun DatabaseReference.updateUser(
-        uid: String,
-        updates: Map<String, Any>,
-        onSuccess: () -> Unit
-    ) {
-        child("users").child(mAuth.currentUser!!.uid).updateChildren(updates)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    onSuccess()
-                } else {
-                    showToast(it.exception!!.message!!)
-                }
-            }
-    }
 
-    private fun FirebaseUser.updateEmail(email: String, onSuccess: () -> Unit) {
-        updateEmail(email).addOnCompleteListener {
-            if (it.isSuccessful) {
-                onSuccess()
-            } else {
-                showToast(it.exception!!.message!!)
-            }
-        }
-    }
-
-
-    private fun FirebaseUser.reautherticate(credential: AuthCredential, onSuccess: () -> Unit) {
-        reauthenticate(credential).addOnCompleteListener {
-            if (it.isSuccessful) {
-                onSuccess()
-            } else {
-                showToast(it.exception!!.message!!)
-            }
-        }
-    }
 }
