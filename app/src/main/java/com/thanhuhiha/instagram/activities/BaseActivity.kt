@@ -5,19 +5,20 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
 import com.thanhuhiha.instagram.*
+import kotlinx.android.synthetic.main.bottom_navigation_view.*
 
-abstract class BaseActivity(val navNumber : Int) : AppCompatActivity() {
+abstract class BaseActivity(val navNumber: Int) : AppCompatActivity() {
     private val TAG = "BaseActivity"
     fun setupBottomNavigation() {
-        val bnv: BottomNavigationViewEx = findViewById(R.id.bottom_navigation_view)
-        bnv.setIconSize(29f, 29f)
-        bnv.setTextVisibility(false)
-        bnv.enableAnimation(false)
-        for (i in 0 until bnv.menu.size()) {
-            bnv.setIconTintList(i, null)
+        //val bnv: BottomNavigationViewEx = findViewById(R.id.bottom_navigation_view)
+        bottom_navigation_view.setIconSize(29f, 29f)
+        bottom_navigation_view.setTextVisibility(false)
+        bottom_navigation_view.enableAnimation(false)
+        for (i in 0 until bottom_navigation_view.menu.size()) {
+            bottom_navigation_view.setIconTintList(i, null)
         }
 
-        bnv.setOnNavigationItemSelectedListener {
+        bottom_navigation_view.setOnNavigationItemSelectedListener {
             val nextActivity =
                 when (it.itemId) {
                     R.id.nav_icon_home -> HomeActivity::class.java
@@ -34,12 +35,18 @@ abstract class BaseActivity(val navNumber : Int) : AppCompatActivity() {
                 val intent = Intent(this, nextActivity)
                 intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
                 startActivity(intent)
-                overridePendingTransition(0,0)
+                overridePendingTransition(0, 0)
                 true
             } else {
                 false
             }
         }
-        bnv.menu.getItem(navNumber).isChecked = true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (bottom_navigation_view != null) {
+            bottom_navigation_view.menu.getItem(navNumber).isChecked = true
+        }
     }
 }

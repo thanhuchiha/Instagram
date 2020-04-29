@@ -47,32 +47,8 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
 
         change_photo_text.setOnClickListener {
             //if system os is Marshmallow or Above, we need to request runtime permission
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (checkSelfPermission(Manifest.permission.CAMERA)
-                    == PackageManager.PERMISSION_DENIED ||
-                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_DENIED
-                ) {
-                    //permission was not enabled
-                    val permission = arrayOf(
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    )
-                    //show popup to request permission
-                    requestPermissions(permission, PERMISSION_CODE)
-                } else {
-                    //permission already granted
-                    openCamera()
-                }
-            } else {
-                //system os is < marshmallow
-                openCamera()
-            }
+            takeCameraPicture()
         }
-
-//        mAuth = FirebaseAuth.getInstance()
-//        mDatabase = FirebaseDatabase.getInstance().reference
-//        mStorage = FirebaseStorage.getInstance().reference
 
         mFirebaseHelper.currentUserReference()
             .addListenerForSingleValueEvent(ValueEventListenerAdapter {
@@ -85,8 +61,32 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
                 website_input.setText(mUser.website)
 //                GlideApp.with(this,)
                 profile_image.loadUserPhoto(mUser.photo)
-                Log.d(TAG,"Image: ${mUser.photo} ")
+                Log.d(TAG, "Image: ${mUser.photo} ")
             })
+    }
+
+    private fun takeCameraPicture() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED ||
+                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_DENIED
+            ) {
+                //permission was not enabled
+                val permission = arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+                //show popup to request permission
+                requestPermissions(permission, PERMISSION_CODE)
+            } else {
+                //permission already granted
+                openCamera()
+            }
+        } else {
+            //system os is < marshmallow
+            openCamera()
+        }
     }
 
     private fun openCamera() {
@@ -112,7 +112,7 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
                     PackageManager.PERMISSION_GRANTED
                 ) {
                     //permission from popup was granted
-                    openCamera()
+                    takeCameraPicture()
                 } else {
                     //permission from popup was denied
                     Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
@@ -123,34 +123,20 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == cameraPictureTaker.REQUEST_CODE && resultCode == RESULT_OK) {
-////            //update image to firebase storage
-////            mFirebaseHelper.uploadUserPhoto(cameraPictureTaker.imageUri!!) {
-////                val photoUrl = it.storage?.downloadUrl.toString()
-////                mFirebaseHelper.updateUserPhoto(photoUrl) {
-////                    mUser = mUser.copy(photo = photoUrl)
-////                    profile_image.loadUserPhoto(mUser.photo)
-////                }
-////            }
-////        }
         if (resultCode == Activity.RESULT_OK) {
             //set image captured to image view
             //update image to firebase storage
-            Log.d(TAG,"IMAGE1: $image_uri")
+            Log.d(TAG, "IMAGE1: $image_uri")
             mFirebaseHelper.uploadUserPhoto(image_uri!!) {
                 val photoUrl = it.storage?.downloadUrl.toString()
                 mFirebaseHelper.updateUserPhoto(image_uri.toString()) {
                     mUser = mUser.copy(photo = image_uri.toString())
                     profile_image.loadUserPhoto(mUser.photo)
-                    //profile_image.setImageURI(image_uri)
-////                }
-                    //profile_image.setImageURI(image_uri)
                 }
             }
         }
     }
     //save image to database user.photo
-
 
     private fun updateProfile() {
         //get user from input
