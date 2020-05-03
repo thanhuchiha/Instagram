@@ -12,9 +12,13 @@ import android.provider.MediaStore
 import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.annotation.GlideModule
+import com.google.firebase.database.ServerValue
 import com.thanhuhiha.instagram.R
+import com.thanhuhiha.instagram.models.User
 import com.thanhuhiha.instagram.utils.CameraPictureTaker
+import com.thanhuhiha.instagram.utils.ValueEventListenerAdapter
 import kotlinx.android.synthetic.main.activity_share.*
+import java.util.*
 
 class ShareActivity : BaseActivity(2) {
     private val TAG = "ShareActivity"
@@ -22,6 +26,7 @@ class ShareActivity : BaseActivity(2) {
     private val PERMISSION_CODE = 1000
     private val IMAGE_CAPTURE_CODE = 1001
     var image_uri: Uri? = null
+    private lateinit var mUser: User
 
     private lateinit var mFirebase: FirebaseHelper
 
@@ -39,6 +44,10 @@ class ShareActivity : BaseActivity(2) {
 
         back_image.setOnClickListener { finish() }
         share_text.setOnClickListener { share() }
+
+        mFirebase.currentUserReference().addValueEventListener(ValueEventListenerAdapter{
+            mUser = it.getValue(User::class.java)!!
+        })
     }
 
     private fun takeCameraPicture() {
@@ -94,12 +103,21 @@ class ShareActivity : BaseActivity(2) {
                 mFirebase.storage.child("users").child(uid).child("images")
                     .child(it).putFile(image_uri!!).addOnCompleteListener {
                         if (it.isSuccessful) {
+                            //val imageDownloadUrl = it.result?.storage?.downloadUrl.toString()
+                            val imageDownloadUrl = image_uri.toString()
                             mFirebase.database.child("images").child(uid).push()
-                                .setValue(image_uri.toString())//it.result?.storage?.downloadUrl!!.toString()
+                            .setValue(imageDownloadUrl)
                                 .addOnCompleteListener {
                                     if (it.isSuccessful) {
-                                        startActivity(Intent(this, ProfileActivity::class.java))
-                                        finish()
+                                        //ctrl + alt + v : extra fun
+                                        mFirebase.database.child("feed-posts").child(uid).push()
+                                            .setValue(mkFeedPost(uid, imageDownloadUrl)).addOnCompleteListener{
+                                                if(it.isSuccessful){
+                                                    startActivity(Intent(this, ProfileActivity::class.java))
+                                                    finish()
+                                                }
+                                            }
+
                                     } else {
                                         showToast(it.exception!!.message!!)
                                     }
@@ -112,4 +130,31 @@ class ShareActivity : BaseActivity(2) {
 
         }
     }
+    private fun mkFeedPost(uid: String, imageDownloadUrl:String): FeedPost{
+        return FeedPost(uid = uid,
+            username = mUser.username,
+            image =imageDownloadUrl,
+            caption = caption_input.text.toString(),
+            photo = mUser.photo)
+    }
+}
+
+data class FeedPost(
+    val uid: String = "",
+    val username: String = "",
+    val image: String = "",
+    val likesCount: Int = 0,
+    val commentsCount: Int = 0,
+    val caption: String = "",
+    val comments: List<Comment> = emptyList(),
+    val timestamp: Any = ServerValue.TIMESTAMP,
+    val photo: String? = null
+) {
+    // save -> firebase puts Long value
+    //get <- Long
+    fun timeStampDate(): Date = Date(timestamp as Long)
+}
+
+data class Comment(val uid: String, val username: String, val text: String) {
+
 }

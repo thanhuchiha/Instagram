@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/user_photo_image"
+        style="@style/icon"
+        android:src="@drawable/person"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/username_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="willsmith"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/user_photo_image"
+        app:layout_constraintTop_toTopOf="@id/user_photo_image"
+        app:layout_constraintBottom_toBottomOf="@id/user_photo_image"/>
+
+    <ImageView
+        android:id="@+id/more_image"
+        style="@style/icon"
+        android:src="@drawable/ic_more"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/user_photo_image"
+        app:layout_constraintBottom_toBottomOf="@id/user_photo_image"/>
+    
+    <ImageView
+        android:id="@+id/post_image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toBottomOf="@id/user_photo_image"
+        app:layout_constraintBottom_toTopOf="@id/like_image"
+        android:src="@drawable/image_placeholder"/>
+    
+    <ImageView
+        android:id="@+id/like_image"
+        style="@style/icon"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintTop_toBottomOf="@id/post_image"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="45dp"
+        android:layout_width="45dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/likes_text"
+        android:src="@drawable/ic_likes_border"/>
+
+    <ImageView
+        android:id="@+id/comment_image"
+        style="@style/icon"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintStart_toEndOf="@id/like_image"
+        app:layout_constraintTop_toTopOf="@id/like_image"
+        app:layout_constraintBottom_toBottomOf="@id/like_image"
+        android:layout_height="45dp"
+        android:layout_width="45dp"
+        android:padding="10dp"
+        android:src="@drawable/ic_comments_border"/>
+
+    <ImageView
+        android:id="@+id/share_image"
+        style="@style/icon"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintStart_toEndOf="@id/comment_image"
+        app:layout_constraintTop_toTopOf="@id/like_image"
+        app:layout_constraintBottom_toBottomOf="@id/like_image"
+        android:layout_height="45dp"
+        android:layout_width="45dp"
+        android:padding="10dp"
+        android:src="@drawable/icon_shares_border"/>
+
+    <TextView
+        android:id="@+id/likes_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="69,699 likes"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/like_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/caption_text"
+        android:layout_marginStart="10dp"/>
+
+    <TextView
+        android:id="@+id/caption_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/likes_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Thanh.uchiha This is a caption for the post. ABCBADADNANDNANDNANDANDA DAD ADAD AD"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>
