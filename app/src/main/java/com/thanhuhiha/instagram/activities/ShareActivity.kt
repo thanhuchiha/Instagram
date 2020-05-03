@@ -95,7 +95,7 @@ class ShareActivity : BaseActivity(2) {
                     .child(it).putFile(image_uri!!).addOnCompleteListener {
                         if (it.isSuccessful) {
                             mFirebase.database.child("images").child(uid).push()
-                                .setValue(it.result?.storage?.downloadUrl!!.toString())
+                                .setValue(image_uri.toString())//it.result?.storage?.downloadUrl!!.toString()
                                 .addOnCompleteListener {
                                     if (it.isSuccessful) {
                                         startActivity(Intent(this, ProfileActivity::class.java))
