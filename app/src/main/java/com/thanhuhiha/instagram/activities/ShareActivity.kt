@@ -103,7 +103,6 @@ class ShareActivity : BaseActivity(2) {
                 mFirebase.storage.child("users").child(uid).child("images")
                     .child(it).putFile(image_uri!!).addOnCompleteListener {
                         if (it.isSuccessful) {
-                            //val imageDownloadUrl = it.result?.storage?.downloadUrl.toString()
                             val imageDownloadUrl = image_uri.toString()
                             mFirebase.database.child("images").child(uid).push()
                                 .setValue(imageDownloadUrl)
