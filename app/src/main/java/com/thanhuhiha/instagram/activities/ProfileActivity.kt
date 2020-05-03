@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -44,9 +46,9 @@ class ProfileActivity : BaseActivity(4) {
 
         image_recycler.layoutManager = GridLayoutManager(this, 3)
         mFirebaseHelper.database.child("images").child(mFirebaseHelper.auth.currentUser!!.uid)
-            .addValueEventListener(ValueEventListenerAdapter {
+                .addValueEventListener(ValueEventListenerAdapter {
                 val images = it.children.map { it.getValue(String::class.java)!! }
-                image_recycler.adapter = ImageAdapter(images)
+                image_recycler.adapter = ImageAdapter(images+ images+ images+ images+ images+ images+ images)
             })
     }
 }
@@ -74,7 +76,7 @@ class ImageAdapter(private val images: List<String>) :
 }
 
 @SuppressLint("AppCompatCustomView")
-class SquareImageView(context: Context, attrs: AttributeSet) : ImageView(context, attrs) {
+class SquareImageView(context: Context, attrs: AttributeSet) : ImageView(context, attrs){
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }

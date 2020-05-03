@@ -52,6 +52,20 @@ class FirebaseHelper(private val activity: Activity) {
             }
     }
 
+    fun uploadUserImages(
+        photo: Uri,
+        onSuccess: (UploadTask.TaskSnapshot) -> Unit
+    ) {
+        storage.child("users/${auth.currentUser!!.uid}/images").putFile(photo)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    onSuccess(it.result!!)
+                } else {
+                    activity.showToast(it.exception!!.message!!)
+                }
+            }
+    }
+
     fun updateUserPhoto(
         photoUrl: String,
         onSuccess: () -> Unit
