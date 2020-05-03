@@ -105,7 +105,7 @@ class ShareActivity : BaseActivity(2) {
                         if (it.isSuccessful) {
                             val imageDownloadUrl = image_uri.toString()
                             mFirebase.database.child("images").child(uid).push()
-                                .setValue(imageDownloadUrl)
+                            .setValue(imageDownloadUrl)
                                 .addOnCompleteListener {
                                     if (it.isSuccessful) {
                                         //ctrl + alt + v : extra fun
