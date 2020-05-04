@@ -12,8 +12,10 @@ import android.provider.MediaStore
 import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.annotation.GlideModule
+import com.google.firebase.database.Exclude
 import com.google.firebase.database.ServerValue
 import com.thanhuhiha.instagram.R
+import com.thanhuhiha.instagram.models.FeedPost
 import com.thanhuhiha.instagram.models.User
 import com.thanhuhiha.instagram.utils.CameraPictureTaker
 import com.thanhuhiha.instagram.utils.ValueEventListenerAdapter
@@ -136,24 +138,4 @@ class ShareActivity : BaseActivity(2) {
             caption = caption_input.text.toString(),
             photo = mUser.photo)
     }
-}
-
-data class FeedPost(
-    val uid: String = "",
-    val username: String = "",
-    val image: String = "",
-    val likesCount: Int = 0,
-    val commentsCount: Int = 0,
-    val caption: String = "",
-    val comments: List<Comment> = emptyList(),
-    val timestamp: Any = ServerValue.TIMESTAMP,
-    val photo: String? = null
-) {
-    // save -> firebase puts Long value
-    //get <- Long
-    fun timeStampDate(): Date = Date(timestamp as Long)
-}
-
-data class Comment(val uid: String, val username: String, val text: String) {
-
 }

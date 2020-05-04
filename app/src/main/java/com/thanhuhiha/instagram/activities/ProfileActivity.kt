@@ -37,6 +37,16 @@ class ProfileActivity : BaseActivity(4) {
             val intent = Intent(this, EditProfileActivity::class.java)
             startActivity(intent)
         }
+        setting_image.setOnClickListener{
+            val intent = Intent(this, ProfileSettingActivity::class.java)
+            startActivity(intent)
+        }
+
+        add_friend_image.setOnClickListener{
+            val intent = Intent(this, AddFriendActivity::class.java)
+            startActivity(intent)
+        }
+
         mFirebaseHelper = FirebaseHelper(this)
         mFirebaseHelper.currentUserReference().addValueEventListener(ValueEventListenerAdapter {
             mUser = it.getValue(User::class.java)!!
@@ -48,9 +58,10 @@ class ProfileActivity : BaseActivity(4) {
         mFirebaseHelper.database.child("images").child(mFirebaseHelper.auth.currentUser!!.uid)
                 .addValueEventListener(ValueEventListenerAdapter {
                 val images = it.children.map { it.getValue(String::class.java)!! }
-                image_recycler.adapter = ImageAdapter(images+ images+ images+ images+ images+ images+ images)
+                image_recycler.adapter = ImageAdapter(images)
             })
     }
+
 }
 
 class ImageAdapter(private val images: List<String>) :
@@ -68,10 +79,6 @@ class ImageAdapter(private val images: List<String>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.image.loadImage(images[position])
-    }
-
-    private fun ImageView.loadImage(image: String) {
-        Glide.with(this).load(image).centerCrop().into(this)
     }
 }
 

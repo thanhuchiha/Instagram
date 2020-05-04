@@ -18,7 +18,9 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.RegisterActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
+            android:windowSoftInputMode="stateVisible|adjustResize">
+        </activity>
+
         <activity
             android:name=".activities.LoginActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
@@ -34,6 +36,8 @@
         <activity android:name=".activities.ProfileActivity" />
         <activity android:name=".activities.SearchActivity" />
         <activity android:name=".activities.ShareActivity" />
+        <activity android:name=".activities.ProfileSettingActivity"/>
+        <activity android:name=".activities.AddFriendActivity"/>
         <!--            android:name="android.support.v4.content.FileProvider"-->
         <provider
             android:name="androidx.core.content.FileProvider"
