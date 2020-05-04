@@ -96,4 +96,7 @@ class FirebaseHelper(private val activity: Activity) {
 
     fun currentUserReference(): DatabaseReference =
         database.child("users").child(auth.currentUser!!.uid)
+
+    fun currentUid(): String? =
+        auth.currentUser?.uid
 }
