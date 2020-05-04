@@ -15,12 +15,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ValueEventListener
 import com.thanhuhiha.instagram.R
 import com.thanhuhiha.instagram.models.FeedPost
@@ -82,25 +79,26 @@ class HomeActivity : BaseActivity(0), FeedAdapter.Listener {
 
     override fun loadLikes(postId: String, position: Int) {
         fun createListener() =
-        mFirebase.database.child("likes").child(postId).addValueEventListener(
-            ValueEventListenerAdapter{
-                val userLikes = it.children.map { it.key }.toSet()
-                val postLikes = FeedPostLikes(
-                    userLikes.size,
-                    userLikes.contains(mFirebase.currentUid())
-                )
-                mAdapter.updatePostLikes(position, postLikes)
-            })
+            mFirebase.database.child("likes").child(postId).addValueEventListener(
+                ValueEventListenerAdapter {
+                    val userLikes = it.children.map { it.key }.toSet()
+                    val postLikes = FeedPostLikes(
+                        userLikes.size,
+                        userLikes.contains(mFirebase.currentUid())
+                    )
+                    mAdapter.updatePostLikes(position, postLikes)
+                })
+
         val createNewListener = mLikesListener[postId] == null
         Log.d(TAG, "loadLikes: $position $createNewListener")
-        if(createNewListener){
+        if (createNewListener) {
             mLikesListener += (postId to createListener())
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mLikesListener.values.forEach{mFirebase.database.removeEventListener(it)}
+        mLikesListener.values.forEach { mFirebase.database.removeEventListener(it) }
     }
 }
 
@@ -145,7 +143,7 @@ class FeedAdapter(private val listener: Listener, private val posts: List<FeedPo
             }
             caption_text.setCaptionText(post.username, post.caption)
             like_image.setOnClickListener { listener.toggleLike(post.id) }
-            like_image.setImageResource(if(likes.likes) R.drawable.ic_likes_active else R.drawable.ic_likes_border)
+            like_image.setImageResource(if (likes.likes) R.drawable.ic_likes_active else R.drawable.ic_likes_border)
             listener.loadLikes(post.id, position)
         }
     }

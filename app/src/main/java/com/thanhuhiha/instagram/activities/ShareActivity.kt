@@ -11,16 +11,12 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import com.bumptech.glide.Glide
-import com.bumptech.glide.annotation.GlideModule
-import com.google.firebase.database.Exclude
-import com.google.firebase.database.ServerValue
 import com.thanhuhiha.instagram.R
 import com.thanhuhiha.instagram.models.FeedPost
 import com.thanhuhiha.instagram.models.User
 import com.thanhuhiha.instagram.utils.CameraPictureTaker
 import com.thanhuhiha.instagram.utils.ValueEventListenerAdapter
 import kotlinx.android.synthetic.main.activity_share.*
-import java.util.*
 
 class ShareActivity : BaseActivity(2) {
     private val TAG = "ShareActivity"
@@ -47,7 +43,7 @@ class ShareActivity : BaseActivity(2) {
         back_image.setOnClickListener { finish() }
         share_text.setOnClickListener { share() }
 
-        mFirebase.currentUserReference().addValueEventListener(ValueEventListenerAdapter{
+        mFirebase.currentUserReference().addValueEventListener(ValueEventListenerAdapter {
             mUser = it.getValue(User::class.java)!!
         })
     }
@@ -107,14 +103,20 @@ class ShareActivity : BaseActivity(2) {
                         if (it.isSuccessful) {
                             val imageDownloadUrl = image_uri.toString()
                             mFirebase.database.child("images").child(uid).push()
-                            .setValue(imageDownloadUrl)
+                                .setValue(imageDownloadUrl)
                                 .addOnCompleteListener {
                                     if (it.isSuccessful) {
                                         //ctrl + alt + v : extra fun
                                         mFirebase.database.child("feed-posts").child(uid).push()
-                                            .setValue(mkFeedPost(uid, imageDownloadUrl)).addOnCompleteListener{
-                                                if(it.isSuccessful){
-                                                    startActivity(Intent(this, ProfileActivity::class.java))
+                                            .setValue(mkFeedPost(uid, imageDownloadUrl))
+                                            .addOnCompleteListener {
+                                                if (it.isSuccessful) {
+                                                    startActivity(
+                                                        Intent(
+                                                            this,
+                                                            ProfileActivity::class.java
+                                                        )
+                                                    )
                                                     finish()
                                                 }
                                             }
@@ -131,11 +133,14 @@ class ShareActivity : BaseActivity(2) {
 
         }
     }
-    private fun mkFeedPost(uid: String, imageDownloadUrl:String): FeedPost{
-        return FeedPost(uid = uid,
+
+    private fun mkFeedPost(uid: String, imageDownloadUrl: String): FeedPost {
+        return FeedPost(
+            uid = uid,
             username = mUser.username,
-            image =imageDownloadUrl,
+            image = imageDownloadUrl,
             caption = caption_input.text.toString(),
-            photo = mUser.photo)
+            photo = mUser.photo
+        )
     }
 }

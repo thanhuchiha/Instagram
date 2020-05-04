@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcel
-import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,11 +11,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.thanhuhiha.instagram.R
 import com.thanhuhiha.instagram.models.User
 import com.thanhuhiha.instagram.utils.ValueEventListenerAdapter
-import kotlinx.android.synthetic.main.activity_edit_profile.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_profile.profile_image
 
@@ -37,12 +33,12 @@ class ProfileActivity : BaseActivity(4) {
             val intent = Intent(this, EditProfileActivity::class.java)
             startActivity(intent)
         }
-        setting_image.setOnClickListener{
+        setting_image.setOnClickListener {
             val intent = Intent(this, ProfileSettingActivity::class.java)
             startActivity(intent)
         }
 
-        add_friend_image.setOnClickListener{
+        add_friend_image.setOnClickListener {
             val intent = Intent(this, AddFriendActivity::class.java)
             startActivity(intent)
         }
@@ -56,12 +52,11 @@ class ProfileActivity : BaseActivity(4) {
 
         image_recycler.layoutManager = GridLayoutManager(this, 3)
         mFirebaseHelper.database.child("images").child(mFirebaseHelper.auth.currentUser!!.uid)
-                .addValueEventListener(ValueEventListenerAdapter {
+            .addValueEventListener(ValueEventListenerAdapter {
                 val images = it.children.map { it.getValue(String::class.java)!! }
                 image_recycler.adapter = ImageAdapter(images)
             })
     }
-
 }
 
 class ImageAdapter(private val images: List<String>) :
@@ -83,7 +78,7 @@ class ImageAdapter(private val images: List<String>) :
 }
 
 @SuppressLint("AppCompatCustomView")
-class SquareImageView(context: Context, attrs: AttributeSet) : ImageView(context, attrs){
+class SquareImageView(context: Context, attrs: AttributeSet) : ImageView(context, attrs) {
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }

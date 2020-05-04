@@ -3,11 +3,8 @@ package com.thanhuhiha.instagram.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.thanhuhiha.instagram.R
 import kotlinx.android.synthetic.main.activity_login.*
@@ -55,8 +52,6 @@ class LoginActivity : AppCompatActivity(), KeyboardVisibilityEventListener,
                 startActivity(Intent(this, RegisterActivity::class.java))
             }
         }
-
-
     }
 
     override fun onVisibilityChanged(isKeyboardOpen: Boolean) {
