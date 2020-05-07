@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".activities.HomeActivity">
+    tools:context=".activities.HomeActivity"
+    android:id="@+id/profile_layout">
     <!--        MAIN UI TOP-->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
