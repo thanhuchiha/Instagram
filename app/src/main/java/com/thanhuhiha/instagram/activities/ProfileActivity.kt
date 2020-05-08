@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,12 +15,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.thanhuhiha.instagram.R
+import com.thanhuhiha.instagram.models.Communicator
 import com.thanhuhiha.instagram.models.User
 import com.thanhuhiha.instagram.utils.ValueEventListenerAdapter
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_profile.profile_image
 
-class ProfileActivity : BaseActivity(4) {
+class ProfileActivity : BaseActivity(4), Communicator {
     private val TAG = "ProfileActivity"
     private lateinit var mFirebaseHelper: FirebaseHelper
     private lateinit var mUser: User
@@ -55,38 +55,53 @@ class ProfileActivity : BaseActivity(4) {
             username_text.text = mUser.username
         })
 
-        val layoutManager = GridLayoutManager(this, 2);
+
+        val layoutManager = GridLayoutManager(this, 2)
         recyclerView = findViewById(R.id.image_recycler)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = layoutManager
-        //imageGalleryAdapter = ImageGalleryAdapter(this, )
         mFirebaseHelper.database.child("images").child(mFirebaseHelper.auth.currentUser!!.uid)
             .addValueEventListener(ValueEventListenerAdapter {
-                val images = it.children.map { it.getValue(String::class.java) }
-                recyclerView.adapter = ImageGalleryAdapter(
-                    this,
-                    (images + images + images + images) as List<String>
-                )
+                val images = it.children.map { it.getValue(String::class.java)!! }
+                Log.d(TAG, "imagesABC: $images")
+                recyclerView.adapter = ImageGalleryAdapter(this, images)
             })
     }
 
-    fun passDataCom(image: String) {
+    //Pass data to fragment
+    override fun passDataCom(image: String) {
         val bundle = Bundle()
         bundle.putString("img", image)
-        val transaction = this.supportFragmentManager.beginTransaction()
-        val fragment = ShowImageFragment()
-        fragment.arguments = bundle
 
-        transaction.replace(R.id.profile_layout, fragment)
-        transaction.addToBackStack(null)
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        transaction.commit()
+        val transaction = this.supportFragmentManager.beginTransaction()
+        val frag = Fragment()
+        frag.arguments = bundle
+
+        transaction.replace(R.id.content_id, frag).addToBackStack(null)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            .commit()
     }
 
-    private inner class ImageGalleryAdapter(
-        val context: Context,
-        private val images: List<String>
-    ) : RecyclerView.Adapter<ImageGalleryAdapter.MyViewHolder>() {
+    //PICASSO
+    private inner class ImageGalleryAdapter(val context: Context, val images: List<String>) :
+        RecyclerView.Adapter<ImageGalleryAdapter.MyViewHolder>() {
+
+        inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+            View.OnClickListener {
+            var photoImageView: ImageView = itemView.findViewById(R.id.iv_photo)
+
+            init {
+                itemView.setOnClickListener(this)
+            }
+
+            override fun onClick(view: View?) {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    Toast.makeText(context, "oke", Toast.LENGTH_SHORT).show()
+                    passDataCom(images[position])
+                }
+            }
+        }
 
         override fun onCreateViewHolder(
             parent: ViewGroup,
@@ -94,41 +109,20 @@ class ProfileActivity : BaseActivity(4) {
         ): ImageGalleryAdapter.MyViewHolder {
             val context = parent.context
             val inflater = LayoutInflater.from(context)
-            val photoView = inflater.inflate(R.layout.image_item, parent, false)
+            val photoView = inflater.inflate(R.layout.item_image, parent, false)
             return MyViewHolder(photoView)
-        }
-
-        override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-            val image = images[position]
-            val imageView = holder.photoImageView
-            Picasso.get().load(image)
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.error).fit().into(imageView)
         }
 
         override fun getItemCount() = images.size
 
-        inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-            View.OnClickListener {
-            var photoImageView: ImageView = itemView.findViewById(R.id.image_item)
-
-            init {
-                itemView.setOnClickListener(this)
-            }
-
-            override fun onClick(v: View?) {
-                val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    val image = images[position]
-//                    val intent = Intent(context, ShowPhotoActivity::class.java)
-//                        .apply {
-//                            putExtra(ShowPhotoActivity.EXTRA_PHOTO, image)
-//                        }
-//                    startActivity(intent)
-                    //passDataCom(image)
-                }
-            }
+        override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+            val photo = images[position]
+            val imageView = holder.photoImageView
+            Picasso.get().load(photo)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.error).fit()
+                .into(imageView)
         }
-
     }
 }
+
