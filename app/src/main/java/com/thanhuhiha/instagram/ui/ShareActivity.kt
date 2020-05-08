@@ -1,4 +1,4 @@
-package com.thanhuhiha.instagram.activities
+package com.thanhuhiha.instagram.ui
 
 import android.Manifest
 import android.app.Activity

@@ -1,6 +1,5 @@
-package com.thanhuhiha.instagram.activities
+package com.thanhuhiha.instagram.ui
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle

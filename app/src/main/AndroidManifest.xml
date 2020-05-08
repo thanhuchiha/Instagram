@@ -14,29 +14,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".activities.ProfileImageActivity"></activity>
-
+        <activity android:name=".ui.NotificationActivity"></activity>
+        <activity android:name=".ui.comment.CommentActivity" />
+        <activity android:name=".ui.ProfileImageActivity" />
         <activity
-            android:name=".activities.RegisterActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
-        <activity
-            android:name=".activities.LoginActivity"
+            android:name=".ui.RegisterActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-        <activity android:name=".activities.EditProfileActivity" />
-        <activity android:name=".activities.HomeActivity">
+        <activity
+            android:name=".ui.LoginActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity android:name=".ui.EditProfileActivity" />
+        <activity android:name=".ui.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.LikeActivity" />
-        <activity android:name=".activities.ProfileActivity" />
-        <activity android:name=".activities.SearchActivity" />
-        <activity android:name=".activities.ShareActivity" />
-        <activity android:name=".activities.ProfileSettingActivity" />
-        <activity android:name=".activities.AddFriendActivity" /> <!-- android:name="android.support.v4.content.FileProvider" -->
+        <activity android:name=".ui.LikeActivity" />
+        <activity android:name=".ui.ProfileActivity" />
+        <activity android:name=".ui.SearchActivity" />
+        <activity android:name=".ui.ShareActivity" />
+        <activity android:name=".ui.ProfileSettingActivity" />
+        <activity android:name=".ui.AddFriendActivity" /> <!-- android:name="android.support.v4.content.FileProvider" -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

@@ -1,4 +1,4 @@
-package com.thanhuhiha.instagram.activities
+package com.thanhuhiha.instagram.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -16,7 +16,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.ValueEventListener
@@ -45,6 +44,11 @@ class HomeActivity : BaseActivity(0), FeedAdapter.Listener {
                 finish()
             }
         }
+
+//        comment_image.setOnClickListener{
+//            startActivity(Intent(this, CommentActivity::class.java))
+//            finish()
+//        }
     }
 
 
