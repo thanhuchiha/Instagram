@@ -16,13 +16,10 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.thanhuhiha.instagram.R
 import com.thanhuhiha.instagram.models.User
-import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.fragment_register_email.*
 import kotlinx.android.synthetic.main.fragment_register_email.email_input
 import kotlinx.android.synthetic.main.fragment_register_namepass.*
 import kotlinx.android.synthetic.main.fragment_register_namepass.password_input
-import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
-import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 
 class RegisterActivity : AppCompatActivity(), EmailFragment.Listener, NamePassFragment.Listener {
     private val TAG = "RegisterActivity"
@@ -47,14 +44,6 @@ class RegisterActivity : AppCompatActivity(), EmailFragment.Listener, NamePassFr
             showToast("error")
         }
     }
-
-//    override fun onVisibilityChanged(isKeyboardOpen: Boolean) {
-//        if (isKeyboardOpen) {
-//            scroll_view.scrollTo(0, scroll_view.bottom)
-//        } else {
-//            scroll_view.scrollTo(0, scroll_view.top)
-//        }
-//    }
 
     override fun onNext(email: String) {
         if (email.isNotEmpty()) {
@@ -150,8 +139,6 @@ class RegisterActivity : AppCompatActivity(), EmailFragment.Listener, NamePassFr
 
     private fun mkUsername(fullName: String) =
         fullName.toLowerCase().replace(" ", ".")
-
-
 }
 
 //1.Email, next button

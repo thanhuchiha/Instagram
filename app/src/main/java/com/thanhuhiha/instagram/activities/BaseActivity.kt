@@ -3,14 +3,12 @@ package com.thanhuhiha.instagram.activities
 import android.content.Intent
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
 import com.thanhuhiha.instagram.*
 import kotlinx.android.synthetic.main.bottom_navigation_view.*
 
 abstract class BaseActivity(val navNumber: Int) : AppCompatActivity() {
     private val TAG = "BaseActivity"
     fun setupBottomNavigation() {
-        //val bnv: BottomNavigationViewEx = findViewById(R.id.bottom_navigation_view)
         bottom_navigation_view.setIconSize(29f, 29f)
         bottom_navigation_view.setTextVisibility(false)
         bottom_navigation_view.enableAnimation(false)

@@ -1,19 +1,14 @@
 package com.thanhuhiha.instagram.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.gms.tasks.Tasks
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseReference
 import com.thanhuhiha.instagram.R
 import com.thanhuhiha.instagram.models.User
 import com.thanhuhiha.instagram.utils.TaskSourceOnCompleteListener
@@ -27,7 +22,6 @@ class AddFriendActivity : AppCompatActivity(), FriendsAdapter.Listener {
     private lateinit var mUsers: List<User>
     private lateinit var mAdapter: FriendsAdapter
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_friend)
@@ -37,18 +31,16 @@ class AddFriendActivity : AppCompatActivity(), FriendsAdapter.Listener {
 
         val uid = mFirebase.auth.currentUser!!.uid
 
-        back_image.setOnClickListener{finish()}
+        back_image.setOnClickListener { finish() }
 
         add_friend_recycler.adapter = mAdapter
         add_friend_recycler.layoutManager = LinearLayoutManager(this)
 
         mFirebase.database.child("users").addValueEventListener(ValueEventListenerAdapter {
-            val allUsers = it.children.map { it.asUser()}
+            val allUsers = it.children.map { it.asUser() }
             val (userList, otherUserList) = allUsers.partition { it?.uid == uid }
             mUser = userList.first()!!
             mUsers = otherUserList as List<User>
-
-
             mAdapter.update(mUsers, mUser.follows)
         })
     }
@@ -66,17 +58,12 @@ class AddFriendActivity : AppCompatActivity(), FriendsAdapter.Listener {
     }
 
     private fun setFollow(uid: String, follow: Boolean, onSuccess: () -> Unit) {
-
-
         val followsTask = mFirebase.database.child("users").child(mUser.uid!!).child("follows")
             .child(uid).setValueTrueOrRemove(follow)
         val followersTask = mFirebase.database.child("users").child(uid).child("followers")
             .child(mUser.uid!!).setValueTrueOrRemove(follow)
-
-
-
         val taskSource = TaskCompletionSource<Void>()
-        val feedPostsTask = task<Void> {taskSource ->
+        val feedPostsTask = task<Void> { taskSource ->
             mFirebase.database.child("feed-posts").child(uid)
                 .addListenerForSingleValueEvent(ValueEventListenerAdapter {
                     val postsMap = if (follow) {
@@ -103,12 +90,10 @@ class AddFriendActivity : AppCompatActivity(), FriendsAdapter.Listener {
 class FriendsAdapter(private val listener: Listener) :
     RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
-
     interface Listener {
         fun follow(uid: String)
         fun unfollow(uid: String)
     }
-
     private val TAG = "AddFriendActivity"
     private var mUsers = listOf<User>()
     private var mFollows = mapOf<String, Boolean>()
@@ -151,8 +136,6 @@ class FriendsAdapter(private val listener: Listener) :
         mFollows = follows
         notifyDataSetChanged()
     }
-
-
 
     fun followed(uid: String) {
         mFollows += (uid to true)

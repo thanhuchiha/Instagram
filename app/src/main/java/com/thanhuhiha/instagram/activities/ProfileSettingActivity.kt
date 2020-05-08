@@ -1,7 +1,6 @@
 package com.thanhuhiha.instagram.activities
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import com.thanhuhiha.instagram.R
 import kotlinx.android.synthetic.main.activity_profile_setting.*

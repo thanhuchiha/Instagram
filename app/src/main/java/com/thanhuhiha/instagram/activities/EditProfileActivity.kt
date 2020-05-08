@@ -1,7 +1,6 @@
 package com.thanhuhiha.instagram.activities
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
@@ -12,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.EmailAuthProvider
 import com.thanhuhiha.instagram.R
@@ -43,7 +41,6 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
 
         close_image.setOnClickListener { finish() }
         save_image.setOnClickListener { updateProfile() }
-        //change_photo_text.setOnClickListener { cameraPictureTaker.takeCameraPicture() }
 
         change_photo_text.setOnClickListener {
             //if system os is Marshmallow or Above, we need to request runtime permission
@@ -59,7 +56,6 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
                 phone_input.setText(mUser.phone?.toString())
                 bio_input.setText(mUser.bio)
                 website_input.setText(mUser.website)
-//                GlideApp.with(this,)
                 profile_image.loadUserPhoto(mUser.photo)
                 Log.d(TAG, "Image: ${mUser.photo} ")
             })
@@ -94,7 +90,7 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
         values.put(MediaStore.Images.Media.TITLE, "New Picture")
         values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
         image_uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-        Log.d(TAG,"Image1 here: $image_uri ")
+        Log.d(TAG, "Image1 here: $image_uri ")
         //camera intent
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri)
@@ -137,8 +133,8 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
             }
         }
     }
-    //save image to database user.photo
 
+    //save image to database user.photo
     private fun updateProfile() {
         //get user from input
         //validate

@@ -55,6 +55,7 @@ class ProfileActivity : BaseActivity(4), Communicator {
             username_text.text = mUser.username
         })
 
+
         val layoutManager = GridLayoutManager(this, 2)
         recyclerView = findViewById(R.id.image_recycler)
         recyclerView.setHasFixedSize(true)

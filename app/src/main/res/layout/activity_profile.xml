@@ -7,7 +7,7 @@
     android:background="@color/white"
     tools:context=".activities.HomeActivity"
     android:id="@+id/content_id"
-    >
+    
     <!--        MAIN UI TOP-->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
