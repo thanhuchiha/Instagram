@@ -10,16 +10,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.thanhuhiha.instagram.R
+import com.thanhuhiha.instagram.models.Communicator
 import com.thanhuhiha.instagram.models.User
 import com.thanhuhiha.instagram.utils.ValueEventListenerAdapter
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_profile.profile_image
 
-class ProfileActivity : BaseActivity(4) {
+class ProfileActivity : BaseActivity(4), Communicator {
     private val TAG = "ProfileActivity"
     private lateinit var mFirebaseHelper: FirebaseHelper
     private lateinit var mUser: User
@@ -52,12 +54,6 @@ class ProfileActivity : BaseActivity(4) {
             profile_image.loadUserPhoto(mUser.photo)
             username_text.text = mUser.username
         })
-//        image_recycler.layoutManager = GridLayoutManager(this, 3)
-//        mFirebaseHelper.database.child("images").child(mFirebaseHelper.auth.currentUser!!.uid)
-//                .addValueEventListener(ValueEventListenerAdapter {
-//                val images = it.children.map { it.getValue(String::class.java)!! }
-//                image_recycler.adapter = ImageAdapter(images+ images + images)
-//            })
 
         val layoutManager = GridLayoutManager(this, 2)
         recyclerView = findViewById(R.id.image_recycler)
@@ -66,10 +62,23 @@ class ProfileActivity : BaseActivity(4) {
         mFirebaseHelper.database.child("images").child(mFirebaseHelper.auth.currentUser!!.uid)
             .addValueEventListener(ValueEventListenerAdapter {
                 val images = it.children.map { it.getValue(String::class.java)!! }
-                Log.d(TAG,"imagesABC: $images")
+                Log.d(TAG, "imagesABC: $images")
                 recyclerView.adapter = ImageGalleryAdapter(this, images)
             })
+    }
 
+    //Pass data to fragment
+    override fun passDataCom(image: String) {
+        val bundle = Bundle()
+        bundle.putString("img", image)
+
+        val transaction = this.supportFragmentManager.beginTransaction()
+        val frag = Fragment()
+        frag.arguments = bundle
+
+        transaction.replace(R.id.content_id, frag).addToBackStack(null)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            .commit()
     }
 
     //PICASSO
@@ -88,6 +97,7 @@ class ProfileActivity : BaseActivity(4) {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     Toast.makeText(context, "oke", Toast.LENGTH_SHORT).show()
+                    passDataCom(images[position])
                 }
             }
         }
