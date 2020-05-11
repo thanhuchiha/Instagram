@@ -7,4 +7,22 @@
     <string name="comments">Comments</string>
     <string name="notifications">Notifications</string>
     <string name="search">Search</string>
+    <string name="you_should_enter_your_password">You should enter your password</string>
+    <string name="profile_saved">Profile saved</string>
+    <string name="please_enter_name">Please enter name</string>
+    <string name="please_enter_username">Please enter username</string>
+    <string name="please_enter_email">Please enter email</string>
+    <string name="username_is_clicked">Username is clicked</string>
+    <string name="please_enter_email_and_password">Please enter email and password</string>
+    <string name="this_email_already_exists">This email already exists</string>
+    <string name="please_enter_fullname_and_password">Please enter full name and password</string>
+    <string name="something_wrong_happened">Something wrong happened. Please try again later</string>
+    <string name="commented">Commented: %s</string>
+    <string name="liked_your_post">Liked your post</string>
+    <string name="started_following_you">Started following you</string>
+
+    <plurals name="likes_count">
+        <item quantity="one">%d like</item>
+        <item quantity="other">%d likes</item>
+    </plurals>
 </resources>

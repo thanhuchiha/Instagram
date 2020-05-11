@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import com.squareup.picasso.Picasso
 import com.thanhuhiha.instagram.R
 
-class Fragment: Fragment() {
+open class Fragment: Fragment() {
     var image: String? = ""
     private val TAG = "A"
     lateinit var imageView: ImageView
