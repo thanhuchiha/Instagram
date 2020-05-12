@@ -1,5 +1,7 @@
 package com.thanhuhiha.instagram.data.firebase
 
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DataSnapshot
@@ -7,6 +9,7 @@ import com.thanhuhiha.instagram.data.FeedPostLike
 import com.thanhuhiha.instagram.data.FeedPostsRepository
 import com.thanhuhiha.instagram.data.common.*
 import com.thanhuhiha.instagram.data.firebase.common.FirebaseLiveData
+import com.thanhuhiha.instagram.data.firebase.common.auth
 import com.thanhuhiha.instagram.data.firebase.common.database
 import com.thanhuhiha.instagram.models.Comment
 import com.thanhuhiha.instagram.models.FeedPost
@@ -93,6 +96,26 @@ class FirebaseFeedPostsRepository : FeedPostsRepository {
                         .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
                 })
         }
+
+    override fun deleteFeedPost(postId: String, uid: String): Task<Unit> = task { taskSource ->
+        val user = auth.currentUser
+        val uidLogin = user?.uid
+
+        if (uidLogin.equals(uid)) {
+            database.child("feed-posts").child(uid)
+                .orderByChild("uid")
+                .equalTo(postId)
+                .addListenerForSingleValueEvent(ValueEventListenerAdapter {
+                    //DELETED FEED-POST
+                    database.child("feed-posts").child(uid).child(postId).removeValue()
+                        .toUnit()
+                        .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
+                    //DELETED IMAGES
+                })
+
+
+        }
+    }
 
 
     private fun DataSnapshot.asComment(): Comment? = getValue(Comment::class.java)?.copy(id = key!!)

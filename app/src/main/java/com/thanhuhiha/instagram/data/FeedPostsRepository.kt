@@ -8,6 +8,7 @@ import com.thanhuhiha.instagram.models.FeedPost
 interface FeedPostsRepository {
     fun copyFeedPosts(postAuthorUid: String, uid: String): Task<Unit>
     fun deleteFeedPosts(postAuthorUid: String, uid: String): Task<Unit>
+    fun deleteFeedPost(postId: String, uid: String): Task<Unit>
     fun getFeedPost(uid: String, postId: String): LiveData<FeedPost>
     fun getFeedPosts(uid: String): LiveData<List<FeedPost>>
     fun toggleLike(postId: String, uid: String): Task<Unit>

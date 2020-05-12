@@ -63,5 +63,8 @@ dependencies {
 
     implementation 'com.nhaarman.supertooltips:library:3.0.+'
 
+    //noinspection GradleCompatible
+    implementation "com.android.support:support-compat:28.0.0"
+
 }
 apply plugin: 'kotlin-kapt'

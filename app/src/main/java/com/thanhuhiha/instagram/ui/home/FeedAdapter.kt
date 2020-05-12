@@ -14,13 +14,13 @@ import com.thanhuhiha.instagram.ui.common.loadUserPhoto
 import com.thanhuhiha.instagram.ui.common.setCaptionText
 import kotlinx.android.synthetic.main.feed_item.view.*
 
-class FeedAdapter(private val listener: Listener)
-    : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
+class FeedAdapter(private val listener: Listener) : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
 
     interface Listener {
         fun toggleLike(postId: String)
         fun loadLikes(postId: String, position: Int)
         fun openComments(postId: String)
+        fun deleteFeedPost(postId: String, uid:String)
     }
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
@@ -52,15 +52,24 @@ class FeedAdapter(private val listener: Listener)
             } else {
                 likes_text.visibility = View.VISIBLE
                 val likesCountText = holder.view.context.resources.getQuantityString(
-                    R.plurals.likes_count, likes.likesCount, likes.likesCount)
+                    R.plurals.likes_count, likes.likesCount, likes.likesCount
+                )
                 likes_text.text = likesCountText
             }
             caption_text.setCaptionText(post.username, post.caption)
             like_image.setOnClickListener { listener.toggleLike(post.id) }
             like_image.setImageResource(
                 if (likes.likedByUser) R.drawable.ic_likes_actived_foreground
-                else R.drawable.ic_likes_border)
+                else R.drawable.ic_likes_border
+            )
             comment_image.setOnClickListener { listener.openComments(post.id) }
+            more_image.setOnClickListener {
+                Log.d("ID", "ID:${post}")
+                val postId = post.id
+                val uid = post.uid
+                //deleteFeedPost(postId, uid)
+                listener.deleteFeedPost(postId,uid)
+            }
             listener.loadLikes(post.id, position)
         }
     }
