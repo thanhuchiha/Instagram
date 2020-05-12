@@ -6,34 +6,44 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import com.thanhuhiha.instagram.R
-import com.thanhuhiha.instagram.ui.common.BaseActivity
-import com.thanhuhiha.instagram.ui.common.ImagesAdapter
-import com.thanhuhiha.instagram.ui.common.setupAuthGuard
-import com.thanhuhiha.instagram.ui.common.setupBottomNavigation
+import com.thanhuhiha.instagram.ui.common.*
 import kotlinx.android.synthetic.main.activity_search.*
 
 class SearchActivity : BaseActivity(), TextWatcher {
     private lateinit var mAdapter: ImagesAdapter
     private lateinit var mViewModel: SearchViewModel
     private var isSearchEntered = false
+    private var images = listOf<String>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         Log.d(TAG, "onCreate")
 
-        setupAuthGuard {uid ->
-            setupBottomNavigation(uid,1)
+        setupAuthGuard { uid ->
+            setupBottomNavigation(uid, 1)
             mAdapter = ImagesAdapter()
             search_results_recycler.layoutManager = GridLayoutManager(this, 3)
-            search_results_recycler.adapter = mAdapter
+
 
             mViewModel = initViewModel()
-            mViewModel.posts.observe(this, Observer{it?.let{posts ->
-                mAdapter.updateImages(posts.map { it.image })
-            }})
+            mViewModel.posts.observe(this, Observer {
+                it?.let { posts ->
+                    if (posts.isNotEmpty()) {
+                        mAdapter.images = posts.map { it.image }
+                        search_results_recycler.adapter = mAdapter
+                        mAdapter.updateImages(posts.map { it.image })
+//                        posts.map {
+//                            Log.d("Posts", "Posts: ${it.image}")
+//                        }
+                    }
+
+                }
+            })
 
             search_input.addTextChangedListener(this)
             mViewModel.setSearchText("")
@@ -50,9 +60,9 @@ class SearchActivity : BaseActivity(), TextWatcher {
         }
     }
 
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     companion object {
         const val TAG = "SearchActivity"

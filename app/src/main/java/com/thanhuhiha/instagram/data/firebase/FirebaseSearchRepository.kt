@@ -1,8 +1,9 @@
-package com.thanhuhiha.instagram.data
+package com.thanhuhiha.instagram.data.firebase
 
 import androidx.lifecycle.LiveData
 import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DataSnapshot
+import com.thanhuhiha.instagram.data.SearchRepository
 import com.thanhuhiha.instagram.data.common.map
 import com.thanhuhiha.instagram.data.common.toUnit
 import com.thanhuhiha.instagram.data.firebase.common.FirebaseLiveData

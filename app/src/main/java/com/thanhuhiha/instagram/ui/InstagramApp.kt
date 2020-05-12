@@ -1,7 +1,7 @@
 package com.thanhuhiha.instagram.ui
 
 import android.app.Application
-import com.thanhuhiha.instagram.data.FirebaseSearchRepository
+import com.thanhuhiha.instagram.data.firebase.FirebaseSearchRepository
 import com.thanhuhiha.instagram.data.common.firebase.FirebaseAuthManager
 import com.thanhuhiha.instagram.data.firebase.FirebaseFeedPostsRepository
 import com.thanhuhiha.instagram.data.firebase.FirebaseNotificationsRepository

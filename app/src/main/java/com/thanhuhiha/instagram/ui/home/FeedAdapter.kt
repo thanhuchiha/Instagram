@@ -1,5 +1,6 @@
 package com.thanhuhiha.instagram.ui.home
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,7 +58,7 @@ class FeedAdapter(private val listener: Listener)
             caption_text.setCaptionText(post.username, post.caption)
             like_image.setOnClickListener { listener.toggleLike(post.id) }
             like_image.setImageResource(
-                if (likes.likedByUser) R.drawable.ic_likes_active
+                if (likes.likedByUser) R.drawable.ic_likes_actived_foreground
                 else R.drawable.ic_likes_border)
             comment_image.setOnClickListener { listener.openComments(post.id) }
             listener.loadLikes(post.id, position)

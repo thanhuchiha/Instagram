@@ -38,9 +38,6 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
         Log.d(TAG, "OnCreate")
-
-        cameraPictureTaker =
-            CameraPictureTaker(this)
         mFirebaseHelper = FirebaseHelper(this)
 
         close_image.setOnClickListener { finish() }
@@ -51,18 +48,6 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
             takeCameraPicture()
         }
 
-//        mFirebaseHelper.currentUserReference()
-//            .addListenerForSingleValueEvent(ValueEventListenerAdapter {
-//                mUser = it.getValue(User::class.java)!!
-//                name_input.setText(mUser.name)
-//                username_input.setText(mUser.username)
-//                email_input.setText(mUser.email)
-//                phone_input.setText(mUser.phone?.toString())
-//                bio_input.setText(mUser.bio)
-//                website_input.setText(mUser.website)
-//                profile_image.loadUserPhoto(mUser.photo)
-//                Log.d(TAG, "Image: ${mUser.photo} ")
-//            })
         setupAuthGuard {
             mViewModel = initViewModel()
 
@@ -76,6 +61,7 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
                     email_input.setText(mUser.email)
                     phone_input.setText(mUser.phone?.toString())
                     profile_image.loadUserPhoto(mUser.photo)
+                    Log.d(TAG, "Image1: ${mUser.photo}")
                 }
             })
         }
@@ -138,26 +124,20 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
         }
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-////        super.onActivityResult(requestCode, resultCode, data)
-////        if (resultCode == Activity.RESULT_OK) {
-////            //set image captured to image view
-////            //update image to firebase storage
-////            Log.d(TAG, "IMAGE1: $image_uri")
-////            mFirebaseHelper.uploadUserPhoto(image_uri!!) {
-////                val photoUrl = it.storage?.downloadUrl.toString()
-////                mFirebaseHelper.updateUserPhoto(image_uri.toString()) {
-////                    mUser = mUser.copy(photo = image_uri.toString())
-////                    profile_image.loadUserPhoto(mUser.photo)
-////                }
-////            }
-////        }
-////    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == mCamera.REQUEST_CODE && resultCode == RESULT_OK) {
-            mViewModel.uploadAndSetUserPhoto(mCamera.imageUri!!)
+        if (resultCode == Activity.RESULT_OK) {
+            //set image captured to image view
+            //update image to firebase storage
+            Log.d(TAG, "IMAGE1: $image_uri")
+            mFirebaseHelper.uploadUserPhoto(image_uri!!) {
+                val photoUrl = it.storage?.downloadUrl.toString()
+                mFirebaseHelper.updateUserPhoto(image_uri.toString()) {
+                    mUser = mUser.copy(photo = image_uri.toString())
+                    Log.d(TAG, "Photo here: ${image_uri.toString()}")
+                    profile_image.loadUserPhoto(mUser.photo)
+                }
+            }
         }
     }
 
@@ -193,21 +173,6 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
         )
     }
 
-
-//    override fun onPasswordConfirm(password: String) {
-////        if (password.isNotEmpty()) {
-////            val credential = EmailAuthProvider.getCredential(mUser.email, password)
-////            mFirebaseHelper.reautherticate(credential) {
-////                mFirebaseHelper.updateEmail(mPendingUser.email) {
-////                    //update user
-////                    updateUser(mPendingUser)
-////                }
-////            }
-////        } else {
-////            showToast("You should enter your password!")
-////        }
-////    }
-
     override fun onPasswordConfirm(password: String) {
         if (password.isNotEmpty()) {
             mViewModel.updateEmail(
@@ -221,20 +186,6 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
         }
     }
 
-    //    private fun updateUser(user: User) {
-//        val updatesMap = mutableMapOf<String, Any?>()
-//        if (user.name != mUser.name) updatesMap["name"] = user.name
-//        if (user.username != mUser.username) updatesMap["username"] = user.username
-//        if (user.website != mUser.website) updatesMap["website"] = user.website
-//        if (user.bio != mUser.bio) updatesMap["bio"] = user.bio
-//        if (user.email != mUser.email) updatesMap["email"] = user.email
-//        if (user.phone != mUser.phone) updatesMap["phone"] = user.phone
-//
-//        mFirebaseHelper.updateUser(updatesMap) {
-//            showToast("Profile saved")
-//            finish()
-//        }
-//    }
     private fun updateUser(user: User) {
         mViewModel.updateUserProfile(currentUser = mUser, newUser = user)
             .addOnSuccessListener {
