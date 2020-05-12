@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.thanhuhiha.instagram.R
+import com.thanhuhiha.instagram.data.firebase.common.auth
 import com.thanhuhiha.instagram.ui.comment.CommentsActivity
 import com.thanhuhiha.instagram.ui.common.BaseActivity
 import com.thanhuhiha.instagram.ui.common.setupAuthGuard
@@ -59,6 +60,10 @@ class HomeActivity : BaseActivity(), FeedAdapter.Listener {
 
     override fun openComments(postId: String) {
         mViewModel.openComments(postId)
+    }
+
+    override fun deleteFeedPost(postId: String, uid: String) {
+        mViewModel.deleteFeedPost(postId,uid)
     }
 
     companion object {

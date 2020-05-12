@@ -50,4 +50,8 @@ class HomeViewModel(onFailureListener: OnFailureListener,
     fun openComments(postId: String) {
         _goToCommentsScreen.value = postId
     }
+
+    fun deleteFeedPost(postId: String, currentUid:String){
+        feedPostsRepo.deleteFeedPost(postId, currentUid)
+    }
 }

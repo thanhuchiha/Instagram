@@ -70,7 +70,7 @@ class ProfileActivity : BaseActivity() {
                     //mAdapter.updateImages(images)
                     if (images.isNotEmpty()) {
                         imagesAdapter = ImagesAdapter()
-                        imagesAdapter.images = images + images + images + images
+                        imagesAdapter.images = images
                         recyclerView.adapter = imagesAdapter
                         posts_count_text.text = images.size.toString()
                     }
