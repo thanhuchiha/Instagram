@@ -13,7 +13,6 @@ class KeyboardAwareScrollView(context: Context, attrs: AttributeSet) : ScrollVie
     init {
         isFillViewport = true
         isVerticalScrollBarEnabled = false
-
     }
 
     override fun onDraw(canvas: Canvas?) {

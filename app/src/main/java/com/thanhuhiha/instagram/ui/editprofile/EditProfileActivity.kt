@@ -27,8 +27,6 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
     private lateinit var mUser: User
     private lateinit var mPendingUser: User
     private lateinit var mFirebaseHelper: FirebaseHelper
-    private lateinit var cameraPictureTaker: CameraPictureTaker
-    private lateinit var mCamera: CameraHelper
     private lateinit var mViewModel: EditProfileViewModel
     private val PERMISSION_CODE = 1000
     private val IMAGE_CAPTURE_CODE = 1001
@@ -37,7 +35,6 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
-        Log.d(TAG, "OnCreate")
         mFirebaseHelper = FirebaseHelper(this)
 
         close_image.setOnClickListener { finish() }
@@ -61,7 +58,6 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
                     email_input.setText(mUser.email)
                     phone_input.setText(mUser.phone?.toString())
                     profile_image.loadUserPhoto(mUser.photo)
-                    Log.d(TAG, "Image1: ${mUser.photo}")
                 }
             })
         }
@@ -129,12 +125,10 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
         if (resultCode == Activity.RESULT_OK) {
             //set image captured to image view
             //update image to firebase storage
-            Log.d(TAG, "IMAGE1: $image_uri")
             mFirebaseHelper.uploadUserPhoto(image_uri!!) {
                 val photoUrl = it.storage?.downloadUrl.toString()
                 mFirebaseHelper.updateUserPhoto(image_uri.toString()) {
                     mUser = mUser.copy(photo = image_uri.toString())
-                    Log.d(TAG, "Photo here: ${image_uri.toString()}")
                     profile_image.loadUserPhoto(mUser.photo)
                 }
             }

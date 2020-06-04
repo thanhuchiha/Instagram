@@ -10,9 +10,10 @@ import com.thanhuhiha.instagram.models.FeedPost
 import com.thanhuhiha.instagram.models.User
 import com.thanhuhiha.instagram.ui.common.BaseViewModel
 
-class ShareViewModel(private val feedPostsRepo: FeedPostsRepository,
-                     private val usersRepo: UsersRepository,
-                     onFailureListener: OnFailureListener
+class ShareViewModel(
+    private val feedPostsRepo: FeedPostsRepository,
+    private val usersRepo: UsersRepository,
+    onFailureListener: OnFailureListener
 ) : BaseViewModel(onFailureListener) {
     private val _shareCompletedEvent = SingleLiveEvent<Unit>()
     val shareCompletedEvent = _shareCompletedEvent
@@ -23,10 +24,14 @@ class ShareViewModel(private val feedPostsRepo: FeedPostsRepository,
             usersRepo.uploadUserImage(user.uid, imageUri).onSuccessTask { downloadUrl ->
                 Tasks.whenAll(
                     usersRepo.setUserImage(user.uid, downloadUrl!!),
-                    feedPostsRepo.createFeedPost(user.uid, mkFeedPost(user, caption,
-                        downloadUrl.toString()))
+                    feedPostsRepo.createFeedPost(
+                        user.uid, mkFeedPost(
+                            user, caption,
+                            downloadUrl.toString()
+                        )
+                    )
                 )
-            }.addOnCompleteListener{
+            }.addOnCompleteListener {
                 _shareCompletedEvent.call()
             }.addOnFailureListener(onFailureListener)
         }

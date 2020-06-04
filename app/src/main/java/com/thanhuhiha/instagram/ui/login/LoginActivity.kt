@@ -17,18 +17,15 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventList
 
 class LoginActivity : BaseActivity(), KeyboardVisibilityEventListener,
     View.OnClickListener {
-    private val TAG = "LoginActivity"
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        Log.d(TAG, "OnCreate")
 
         KeyboardVisibilityEvent.setEventListener(this, this)
 
-        //login_btn.isEnabled = false
         coordinateBtnAndInput(
             login_btn,
             email_input,

@@ -18,7 +18,8 @@ class SearchPostsCreator(searchRepo: SearchRepository) : BaseEventListener() {
                             SearchPost(
                                 image = image,
                                 caption = caption,
-                                postId = id)
+                                postId = id
+                            )
                         }
                         searchRepo.createPost(searchPost).addOnFailureListener {
                             Log.d(TAG, "Failed to create search post for event: $event", it)
