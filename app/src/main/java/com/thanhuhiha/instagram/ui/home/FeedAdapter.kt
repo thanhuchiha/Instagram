@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.RemoteMessage
 import com.thanhuhiha.instagram.R
 import com.thanhuhiha.instagram.models.FeedPost
 import com.thanhuhiha.instagram.ui.common.SimpleCallback
@@ -20,7 +22,7 @@ class FeedAdapter(private val listener: Listener) : RecyclerView.Adapter<FeedAda
         fun toggleLike(postId: String)
         fun loadLikes(postId: String, position: Int)
         fun openComments(postId: String)
-        fun deleteFeedPost(postId: String, uid:String)
+        fun deleteFeedPost(postId: String, uid: String)
     }
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
@@ -43,6 +45,7 @@ class FeedAdapter(private val listener: Listener) : RecyclerView.Adapter<FeedAda
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val post = posts[position]
         val likes = postLikes[position] ?: defaultPostLikes
+        val myMessagingService: MyMessagingService = MyMessagingService()
         with(holder.view) {
             user_photo_image.loadUserPhoto(post.photo)
             username_text.text = post.username
@@ -57,10 +60,20 @@ class FeedAdapter(private val listener: Listener) : RecyclerView.Adapter<FeedAda
                 likes_text.text = likesCountText
             }
             caption_text.setCaptionText(post.username, post.caption)
-            like_image.setOnClickListener { listener.toggleLike(post.id) }
+            like_image.setOnClickListener {
+                if (!likes.likedByUser)
+                    myMessagingService.showNotification(
+                        "Instagram",
+                        "${username_text.text.toString()} liked feed for you!",
+                        this.context
+                    )
+                listener.toggleLike(post.id)
+
+            }
             like_image.setImageResource(
-                if (likes.likedByUser) R.drawable.ic_likes_actived_foreground
-                else R.drawable.ic_likes_border
+                if (likes.likedByUser) {
+                    R.drawable.ic_likes_actived_foreground
+                } else R.drawable.ic_likes_border
             )
             comment_image.setOnClickListener { listener.openComments(post.id) }
             more_image.setOnClickListener {
@@ -68,7 +81,7 @@ class FeedAdapter(private val listener: Listener) : RecyclerView.Adapter<FeedAda
                 val postId = post.id
                 val uid = post.uid
                 //deleteFeedPost(postId, uid)
-                listener.deleteFeedPost(postId,uid)
+                listener.deleteFeedPost(postId, uid)
             }
             listener.loadLikes(post.id, position)
         }

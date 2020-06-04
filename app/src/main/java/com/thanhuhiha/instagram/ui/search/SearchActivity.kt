@@ -16,19 +16,15 @@ class SearchActivity : BaseActivity(), TextWatcher {
     private lateinit var mAdapter: ImagesAdapter
     private lateinit var mViewModel: SearchViewModel
     private var isSearchEntered = false
-    private var images = listOf<String>()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        Log.d(TAG, "onCreate")
 
         setupAuthGuard { uid ->
             setupBottomNavigation(uid, 1)
             mAdapter = ImagesAdapter()
             search_results_recycler.layoutManager = GridLayoutManager(this, 3)
-
 
             mViewModel = initViewModel()
             mViewModel.posts.observe(this, Observer {
@@ -37,11 +33,7 @@ class SearchActivity : BaseActivity(), TextWatcher {
                         mAdapter.images = posts.map { it.image }
                         search_results_recycler.adapter = mAdapter
                         mAdapter.updateImages(posts.map { it.image })
-//                        posts.map {
-//                            Log.d("Posts", "Posts: ${it.image}")
-//                        }
                     }
-
                 }
             })
 

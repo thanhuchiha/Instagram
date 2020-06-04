@@ -1,7 +1,10 @@
 package com.thanhuhiha.instagram.ui
 
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -9,6 +12,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
@@ -74,3 +78,7 @@ fun DataSnapshot.asFeedPost(): FeedPost?=
 
 fun DatabaseReference.setValueTrueOrRemove(value: Boolean) =
     if (value) setValue(true) else removeValue()
+
+fun Notification(message: String){
+
+}

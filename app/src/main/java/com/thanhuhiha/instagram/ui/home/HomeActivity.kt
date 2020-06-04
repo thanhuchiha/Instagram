@@ -1,9 +1,16 @@
 package com.thanhuhiha.instagram.ui.home
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.RemoteMessage
 import com.thanhuhiha.instagram.R
 import com.thanhuhiha.instagram.data.firebase.common.auth
 import com.thanhuhiha.instagram.ui.comment.CommentsActivity
@@ -20,7 +27,6 @@ class HomeActivity : BaseActivity(), FeedAdapter.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        Log.d(TAG, "onCreate")
 
         mAdapter = FeedAdapter(this)
         feed_recycler.adapter = mAdapter
@@ -44,7 +50,6 @@ class HomeActivity : BaseActivity(), FeedAdapter.Listener {
     }
 
     override fun toggleLike(postId: String) {
-        Log.d(TAG, "toggleLike: $postId")
         mViewModel.toggleLike(postId)
     }
 
@@ -63,7 +68,7 @@ class HomeActivity : BaseActivity(), FeedAdapter.Listener {
     }
 
     override fun deleteFeedPost(postId: String, uid: String) {
-        mViewModel.deleteFeedPost(postId,uid)
+        mViewModel.deleteFeedPost(postId, uid)
     }
 
     companion object {

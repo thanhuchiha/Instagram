@@ -16,7 +16,6 @@ class InstagramApp : Application() {
     val authManager by lazy { FirebaseAuthManager() }
     val searchRepo by lazy { FirebaseSearchRepository() }
 
-
     override fun onCreate() {
         super.onCreate()
         NotificationsCreator(notificationsRepo, usersRepo, feedPostsRepo)

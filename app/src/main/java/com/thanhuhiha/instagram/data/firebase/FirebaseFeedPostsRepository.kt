@@ -112,11 +112,8 @@ class FirebaseFeedPostsRepository : FeedPostsRepository {
                         .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
                     //DELETED IMAGES
                 })
-
-
         }
     }
-
 
     private fun DataSnapshot.asComment(): Comment? = getValue(Comment::class.java)?.copy(id = key!!)
 }

@@ -22,7 +22,6 @@ class ProfileActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
-        Log.d(TAG, "onCreate")
 
         edit_profile_btn.setOnClickListener {
             val intent = Intent(this, EditProfileActivity::class.java)
@@ -40,10 +39,6 @@ class ProfileActivity : BaseActivity() {
         recyclerView = findViewById(R.id.image_recycler)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = layoutManager
-
-//        image_recycler.layoutManager = GridLayoutManager(this, 3)
-//        mAdapter = ImagesAdapter()
-//        image_recycler.adapter = mAdapter
 
         setupAuthGuard { uid ->
             setupBottomNavigation(uid, 4)
@@ -67,7 +62,6 @@ class ProfileActivity : BaseActivity() {
             viewModel.images.observe(this, Observer {
                 it?.let { images ->
                     Log.d(TAG, "Image Here: $images")
-                    //mAdapter.updateImages(images)
                     if (images.isNotEmpty()) {
                         imagesAdapter = ImagesAdapter()
                         imagesAdapter.images = images

@@ -36,24 +36,8 @@ class ShareActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_share)
 
-        //setupBottomNavigation()
-        Log.d(TAG, "OnCreate")
-
-//        mFirebase = FirebaseHelper(this)
-//
-//        //if system os is Marshmallow or Above, we need to request runtime permission
-//        takeCameraPicture()
-//
-//        back_image.setOnClickListener { finish() }
-//        share_text.setOnClickListener { share() }
-//
-//        mFirebase.currentUserReference().addValueEventListener(ValueEventListenerAdapter {
-//            mUser = it.getValue(User::class.java)!!
-//        })
-
         setupAuthGuard {
             mViewModel = initViewModel()
-
             takeCameraPicture()
 
             back_image.setOnClickListener { finish() }
@@ -116,15 +100,5 @@ class ShareActivity : BaseActivity() {
 
     private fun share() {
         mViewModel.share(mUser, image_uri, caption_input.text.toString())
-    }
-
-    private fun mkFeedPost(uid: String, imageDownloadUrl: String): FeedPost {
-        return FeedPost(
-            uid = uid,
-            username = mUser.username,
-            image = imageDownloadUrl,
-            caption = caption_input.text.toString(),
-            photo = mUser.photo
-        )
     }
 }

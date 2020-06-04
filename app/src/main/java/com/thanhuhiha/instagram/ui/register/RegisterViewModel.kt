@@ -10,10 +10,11 @@ import com.thanhuhiha.instagram.models.User
 import com.thanhuhiha.instagram.ui.common.BaseViewModel
 import com.thanhuhiha.instagram.ui.common.CommonViewModel
 
-class RegisterViewModel(private val commonViewModel: CommonViewModel,
-                        private val app: Application,
-                        onFailureListener: OnFailureListener,
-                        private val usersRepo: UsersRepository
+class RegisterViewModel(
+    private val commonViewModel: CommonViewModel,
+    private val app: Application,
+    onFailureListener: OnFailureListener,
+    private val usersRepo: UsersRepository
 ) : BaseViewModel(onFailureListener) {
     private var email: String? = null
     private val _goToNamePassScreen = SingleLiveEvent<Unit>()
@@ -36,7 +37,6 @@ class RegisterViewModel(private val commonViewModel: CommonViewModel,
         } else {
             commonViewModel.setErrorMessage(app.getString(R.string.please_enter_email))
         }
-
     }
 
     fun onRegister(fullName: String, password: String) {

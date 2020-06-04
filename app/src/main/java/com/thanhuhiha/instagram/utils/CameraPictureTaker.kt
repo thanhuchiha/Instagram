@@ -18,14 +18,4 @@ class CameraPictureTaker(private val activity: Activity) {
         "yyyyMMdd_HHmmss",
         Locale.US
     ).format(Date())
-
-    private fun createImageFile(): File {
-        // Create an image file name
-        val storageDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "JPEG_${simpleDateFormat.format(Date())}_",
-            ".jpg",
-            storageDir
-        )
-    }
 }

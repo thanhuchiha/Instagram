@@ -98,7 +98,6 @@ class FirebaseUsersRepository : UsersRepository {
             storage.child("users").child(uid).child("images")
                 .child(imageUri.lastPathSegment!!).putFile(imageUri).addOnCompleteListener {
                     if (it.isSuccessful) {
-                        //taskSource.setResult(it.result?.storage?.downloadUrl?.result)
                         taskSource.setResult(imageUri)
                     } else {
                         taskSource.setException(it.exception!!)

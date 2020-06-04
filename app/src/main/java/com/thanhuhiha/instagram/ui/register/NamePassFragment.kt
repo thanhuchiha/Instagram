@@ -18,8 +18,10 @@ class NamePassFragment : Fragment() {
         fun onRegister(fullName: String, password: String)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_register_namepass, container, false)
     }
 
