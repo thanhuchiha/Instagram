@@ -1,6 +1,5 @@
-# Instagram
-Program language: Kotlin 
-Link API : https://hogehoge.ne.jp
+
+Links test : https://hogehoge.ne.jp
 
 https://hogehoge2.ne.jp
 
