@@ -1,12 +1,19 @@
 
-Links test : https://hogehoge.ne.jp
+Links test : 
 
-https://hogehoge2.ne.jp
+<a href="https://hogehoge.ne.jp">link text 1</a>
 
-https://fugafuga.ne.jp
+<a href="https://hogehoge2.ne.jp">link text 2</a>
 
-https://hogehoge3.ne.jp/
+<a href="https://fugafuga.ne.jp">link text 3</a>
 
-https://hogehoge4.ne.jp
+<a href="https://hogehoge3.ne.jp/">link text 4</a>
 
-https://www.google.com/
+<a href="https://hogehoge4.ne.jp">link text 4</a>
+
+<a href="https://www.google.com/">Google</a>
+
+
+
+
+
